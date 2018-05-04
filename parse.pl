@@ -133,7 +133,7 @@ sub main {
                     $vendor_end = $vendor_start;
                 }
 
-                substr($bitfield, $vendor_start - 1, $vendor_end - $vendor_start + 1) = $override_consent;
+                substr($bitfield, $vendor_start - 1, $vendor_end - $vendor_start + 1) = $override_consent x ($vendor_end - $vendor_start + 1);
             }
         }
 
