@@ -115,26 +115,24 @@ sub main {
         my $bitfield = "$default_consent" x $max_vendor_id;
         my $override_consent = "" . (1 - $default_consent);
 
-        while (length($binary) >= 6) {
-            extract_bits("Num Ranges", \$binary, \my $num_ranges, 12);
+        extract_bits("Num Ranges", \$binary, \my $num_ranges, 12);
 
-            for (my $i = 0; $i < $num_ranges; $i++) {
-                my $vendor_start;
-                my $vendor_end;
+        for (my $i = 0; $i < $num_ranges; $i++) {
+            my $vendor_start;
+            my $vendor_end;
 
-                extract_bits("Is Range", \$binary, \my $is_range, 1);
+            extract_bits("Is Range", \$binary, \my $is_range, 1);
 
-                if ($is_range) {
-                    extract_bits("Vendor Start", \$binary, \$vendor_start, 16);
-                    extract_bits("Vendor End",   \$binary, \$vendor_end,   16);
-                }
-                else {
-                    extract_bits("Single Vendor", \$binary, \$vendor_start, 16);
-                    $vendor_end = $vendor_start;
-                }
-
-                substr($bitfield, $vendor_start - 1, $vendor_end - $vendor_start + 1) = $override_consent x ($vendor_end - $vendor_start + 1);
+            if ($is_range) {
+                extract_bits("Vendor Start", \$binary, \$vendor_start, 16);
+                extract_bits("Vendor End",   \$binary, \$vendor_end,   16);
             }
+            else {
+                extract_bits("Single Vendor", \$binary, \$vendor_start, 16);
+                $vendor_end = $vendor_start;
+            }
+
+            substr($bitfield, $vendor_start - 1, $vendor_end - $vendor_start + 1) = $override_consent x ($vendor_end - $vendor_start + 1);
         }
 
         $binary = $bitfield;
